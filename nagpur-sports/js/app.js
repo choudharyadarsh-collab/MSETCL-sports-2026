@@ -39,8 +39,12 @@ class App {
         container.innerHTML = '<div class="loading-state">Fetching Live Data...</div>';
 
         // Fetch Main Score Board for Overview
-        const scoreBoardData = await this.dataService.fetchSheet(SHEETS.SCORE_BOARD);
-        console.log("Score Board Data:", scoreBoardData);
+        try {
+            const scoreBoardData = await this.dataService.fetchSheet(SHEETS.SCORE_BOARD);
+            this.renderTable(scoreBoardData, 'main-scoreboard-container');
+        } catch (e) {
+            console.error("Failed to load main scoreboard", e);
+        }
 
         // Define icons for sports
         const icons = {
@@ -110,8 +114,8 @@ class App {
         this.renderTable(data);
     }
 
-    renderTable(data) {
-        const container = document.getElementById('data-container');
+    renderTable(data, containerId = 'data-container') {
+        const container = document.getElementById(containerId);
         if (!data || data.length < 2) {
             container.innerHTML = '<p style="text-align:center; padding: 2rem;">No data available yet.</p>';
             return;
